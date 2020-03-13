@@ -1,20 +1,19 @@
-#include "mythread.h"
+#include "counterincrementer.h"
 
+#include<thread>
 static volatile long unsigned int counter;
-static volatile bool IsRunning = false;
 
-void runTask(unsigned long nbIterations)
+void runTask(CriticalSection *criticalSection, unsigned long nbIterations, int id)
 {
     long unsigned int i = 0;
-    // active  waiting until the other thread are running
-    while (IsRunning) ;
-    IsRunning = true;
+
     while (i < nbIterations)
     {
+        criticalSection->lock(id);
         counter++;
+        criticalSection->unlock(id);
         i++;
     }
-    IsRunning = false;
 }
 
 void initCounter()

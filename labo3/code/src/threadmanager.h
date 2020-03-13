@@ -11,7 +11,8 @@
 
 #ifndef THREADMANAGER_H
 #define THREADMANAGER_H
-
+#include <pcosynchro/pcothread.h>
+#include <pcosynchro/pcomutex.h>
 #include <QObject>
 #include <QString>
 
@@ -25,6 +26,9 @@ class ThreadManager: public QObject
 {
     Q_OBJECT
 private:
+
+    //! Liste des threads MyThread qui incrémente le compteur partagé.
+    std::vector<std::unique_ptr<PcoThread>> threadList;
 
 public:
     /**

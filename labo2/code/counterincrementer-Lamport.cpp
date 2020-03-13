@@ -1,5 +1,6 @@
 #include "counterincrementer.h"
 
+#include<thread>
 static volatile long unsigned int counter;
 
 void runTask(CriticalSection *criticalSection, unsigned long nbIterations, int id)
@@ -8,8 +9,10 @@ void runTask(CriticalSection *criticalSection, unsigned long nbIterations, int i
 
     while (i < nbIterations)
     {
+        criticalSection->lock(id);
         counter++;
         i++;
+        criticalSection->unlock(id);
     }
 }
 
