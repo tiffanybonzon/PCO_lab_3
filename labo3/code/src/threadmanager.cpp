@@ -3,11 +3,7 @@
 #include <pcosynchro/pcothread.h>
 #include "threadmanager.h"
 #include "mythread.h"
-long long unsigned int nbComputed;
-unsigned int nbValidChars;//Nombre de caractères différents pouvant composer le mot de passe
-long long unsigned int nbToCompute;
-QVector<unsigned int> currentPasswordArray;
-QString password = "";
+static volatile long long unsigned int nbComputed;
 
 /*
  * std::pow pour les long long unsigned int
@@ -39,22 +35,6 @@ void ThreadManager::incrementPercentComputed(double percentComputed)
     emit sig_incrementPercentComputed(percentComputed);
 }
 
-void testHash(QString currentPasswordString, QString hash, QString salt){
-    QString currentHash;//Hash du mot de passe à tester courant
-    QCryptographicHash md5(QCryptographicHash::Md5);//Object QCryptographicHash servant à générer des md5
-    md5.reset();/* On vide les données déjà ajoutées au générateur */
-    /* On préfixe le mot de passe avec le sel */
-    md5.addData(salt.toLatin1());
-    md5.addData(currentPasswordString.toLatin1());
-    currentHash = md5.result().toHex(); /* On calcul le hash */
-
-    /*
-     * Si on a trouvé, on retourne le mot de passe courant (sans le sel)
-     */
-    if (currentHash == hash){
-        password= currentPasswordString;
-    }
-}
 
 void genPass(unsigned int nbChars, QString salt,QString hash, QString charset, unsigned int min, unsigned int max){
     PcoMutex mut;
@@ -74,10 +54,16 @@ void genPass(unsigned int nbChars, QString salt,QString hash, QString charset, u
     // variable de boucle
     unsigned i = 0;
     // init de la version numerique du mot de passe
+    QVector<unsigned int> currentPasswordArray;
     currentPasswordArray.fill(0,nbChars);
     currentPasswordArray[0] = min;
 
+    QString password = "";
+    QString currentHash;//Hash du mot de passe à tester courant
+    QCryptographicHash md5(QCryptographicHash::Md5);//Object QCryptographicHash servant à générer des md5
+
     while (currentPasswordArray[0] <= max){
+        i = 0;
         while (i < (unsigned int)currentPasswordArray.size()) {
             currentPasswordArray[i]++;
 
@@ -87,7 +73,6 @@ void genPass(unsigned int nbChars, QString salt,QString hash, QString charset, u
             } else
                 break;
         }
-
         /*
          * On traduit les index présents dans currentPasswordArray en
          * caractères
@@ -97,7 +82,18 @@ void genPass(unsigned int nbChars, QString salt,QString hash, QString charset, u
         mut.lock();
         nbComputed++;
         mut.unlock();
-        testHash(currentPasswordString,hash,salt);
+        md5.reset();/* On vide les données déjà ajoutées au générateur */
+        /* On préfixe le mot de passe avec le sel */
+        md5.addData(salt.toLatin1());
+        md5.addData(currentPasswordString.toLatin1());
+        currentHash = md5.result().toHex(); /* On calcul le hash */
+
+        /*
+         * Si on a trouvé, on retourne le mot de passe courant (sans le sel)
+         */
+        if (currentHash == hash){
+            password= currentPasswordString;
+        }
     }
 }
 
@@ -127,8 +123,7 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
         PcoThread *currentThread = new PcoThread(genPass, nbChars, salt, hash,charset, 0, nbChars);
         threadList.push_back(std::unique_ptr<PcoThread>(currentThread));
     }
-    while (nbComputed < nbToCompute) {
-
+    while (nbComputed < nbToCompute && password == "") {
         /*
          * Tous les 1000 hash calculés, on notifie qui veut bien entendre
          * de l'état de notre avancement (pour la barre de progression)
@@ -136,12 +131,9 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
         if ((nbComputed % 1000) == 0) {
             incrementPercentComputed((double)1000/nbToCompute);
         }
-
-
-
-
-        genPass(nbChars, salt, hash,charset, 0, nbChars);
     }
+
+    qDebug("%s", qUtf8Printable(password.toLatin1()));
 
     /* Attends la fin de chaque thread et libère la mémoire associée.
      * Durant l'attente, l'application est bloquée.
@@ -150,11 +142,9 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
         threadList[i]->requestStop();
         threadList[i]->join();
     }
-    /* Vide la liste de pointeurs de threads */
-    threadList.clear();
     /*
      * Si on arrive ici, cela signifie que tous les mot de passe possibles ont
      * été testés, et qu'aucun n'est la préimage de ce hash.
      */
-    return QString("");
+    return password != ""? password.toLatin1() : QString("");
 }

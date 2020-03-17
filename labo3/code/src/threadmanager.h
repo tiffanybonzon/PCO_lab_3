@@ -29,7 +29,8 @@ private:
 
     //! Liste des threads MyThread qui incrémente le compteur partagé.
     std::vector<std::unique_ptr<PcoThread>> threadList;
-
+    unsigned int nbValidChars;//Nombre de caractères différents pouvant composer le mot de passe
+    long long unsigned int nbToCompute;
 public:
     /**
      * \brief ThreadManager Constructeur simple
