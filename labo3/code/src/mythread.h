@@ -1,7 +1,8 @@
 #ifndef MYTHREAD_H
 #define MYTHREAD_H
+#include "threadmanager.h"
 
-void runTask( long long unsigned int nbToCompute, int id);
+void runTask(ThreadManager *tm, unsigned int min, unsigned int max);
 
 void initCounter();
 

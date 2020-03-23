@@ -31,12 +31,25 @@ private:
     std::vector<std::unique_ptr<PcoThread>> threadList;
     unsigned int nbValidChars;//Nombre de caractères différents pouvant composer le mot de passe
     long long unsigned int nbToCompute;
+    unsigned int nbChars;
+    QString hash;
+    QString charset;
+    QString salt;
+    QString password;
 public:
     /**
      * \brief ThreadManager Constructeur simple
      * \param parent Objet parent de l'interface
      */
     ThreadManager(QObject *parent);
+
+    QString getHash();
+    QString getSalt();
+    QString getCharSet();
+    unsigned int getnbChars();
+    unsigned int getnbToCompute();
+    void setPassword(QString password);
+    unsigned int getNbValidChars();
 
     /**
      * \brief startHacking tâche qui s'occupe de trouver le hash md5.
