@@ -2,7 +2,7 @@
 #define MYTHREAD_H
 #include "threadmanager.h"
 
-void runTask(ThreadManager *tm, unsigned int min, unsigned int max);
+void runTask(ThreadManager *tm, long long unsigned int min, long long unsigned int max);
 
 void initCounter();
 

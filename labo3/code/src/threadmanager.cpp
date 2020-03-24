@@ -2,7 +2,6 @@
 #include <QVector>
 #include "threadmanager.h"
 #include "mythread.h"
-static volatile long long unsigned int nbComputed;
 /*
  * std::pow pour les long long unsigned int
  */
@@ -27,7 +26,6 @@ ThreadManager::ThreadManager(QObject *parent) :
     QObject(parent)
 {}
 
-
 void ThreadManager::incrementPercentComputed(double percentComputed)
 {
     emit sig_incrementPercentComputed(percentComputed);
@@ -47,6 +45,10 @@ QString ThreadManager::getSalt(){
 
 QString ThreadManager::getCharSet(){
     return this->charset;
+}
+
+QString ThreadManager::getPassword(){
+    return this->password;
 }
 
 unsigned int ThreadManager::getnbChars(){
@@ -88,13 +90,24 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
     initCounter();
 
     // nombre de calculs par thread
-    long long unsigned int step = this->nbToCompute/nbThreads;
-
+    long long unsigned int  step = this->nbToCompute/nbThreads;
 
     /* Crée les threads, on ajoutant leur pointeur à la liste.
        Les threads sont immédiatement lancés par le constructeur. */
     long long unsigned int min = 0;
     long long unsigned int max = 0;
+
+    /*
+     * Comme nous désirons diviser le nombre de calcul en modifiant le caractère de poids fort de commencement du thread
+     * (Exemple aaaH pour 2 threads et 4 caractères) il se peut que la divison ne soit possible qu'en modifiant tous les caractères de début
+     * Il faudrait effectuer une partie calcul suplémentaire dans le thread, ce qui n'est pas souhaité.
+     * ICI nous replacons juste les intervals pour que tous le charset soit couvert
+     */
+    long double modulo = step / this->getNbValidChars();
+    while(modulo >= this->getNbValidChars()) modulo /= this->getNbValidChars();
+    if((modulo - (long long unsigned int)modulo) > 0){
+        step = (long long unsigned int)(modulo + 1) * intPow((long long unsigned int)this->nbValidChars, nbChars - 1);
+    }
 
     for (long unsigned int i=0; i<nbThreads; i++){
         // si c'est le dernier thread on fixe le plafond au maximum
@@ -119,13 +132,10 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
 
     }
 
-    //qDebug("%s", qUtf8Printable(password.toLatin1()));
-
     /* Attends la fin de chaque thread et libère la mémoire associée.
      * Durant l'attente, l'application est bloquée.
      */
     for (long unsigned int i=0; i<nbThreads; i++){
-        threadList[i]->requestStop();
         threadList[i]->join();
     }
 

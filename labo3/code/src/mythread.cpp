@@ -5,21 +5,21 @@
 #include <QVector>
 static volatile long long unsigned int nbComputed;
 
-void runTask(ThreadManager *tm, unsigned int min, unsigned int max){
-    // variable de boucle
-    unsigned int i = 0;
+void runTask(ThreadManager *tm, long long unsigned int min, long long unsigned int max){
     // mutex pour section critique
     PcoMutex mut;
-    // Mot de passe à tester courant
-    QString currentPasswordString;
 
-    // init de division du mot de passe
-    currentPasswordString.fill(tm->getCharSet().at(0),tm->getnbChars());
-    currentPasswordString[0] = tm->getCharSet().at(0);
+    long long unsigned int modulo = min / tm->getNbValidChars();
+    while(modulo >= tm->getNbValidChars()) modulo /= tm->getNbValidChars();
 
     QVector<unsigned int> currentPasswordArray;
     currentPasswordArray.fill(0,tm->getnbChars());
-    currentPasswordArray[0] = 0;
+    currentPasswordArray[tm->getnbChars() - 1] = modulo;
+
+    QString currentPasswordString;
+    // Mot de passe à tester courant
+    for (unsigned int j=0;j<tm->getnbChars();j++)
+        currentPasswordString[j]  = tm->getCharSet().at(currentPasswordArray.at(j));
 
     QString currentHash;//Hash du mot de passe à tester courant
     QCryptographicHash md5(QCryptographicHash::Md5);//Object QCryptographicHash servant à générer des md5
@@ -30,13 +30,16 @@ void runTask(ThreadManager *tm, unsigned int min, unsigned int max){
         md5.addData(tm->getSalt().toLatin1());
         md5.addData(currentPasswordString.toLatin1());
         currentHash = md5.result().toHex(); /* On calcul le hash */
-        i = 0;
+
+        if(tm->getPassword() != "")
+            return;
 
         if (currentHash == tm->getHash()){
             tm->setPassword(currentPasswordString);
             return;
         }
 
+        unsigned int i = 0;
         while (i < (unsigned int)currentPasswordArray.size()) {
             currentPasswordArray[i]++;
 
@@ -46,11 +49,9 @@ void runTask(ThreadManager *tm, unsigned int min, unsigned int max){
             } else
                 break;
         }
-        /*
-         * On traduit les index présents dans currentPasswordArray en caractères
-         */
-        for (i=0;i<tm->getnbChars();i++)
-            currentPasswordString[(int)i]  = tm->getCharSet().at(currentPasswordArray.at(i));
+        //On traduit les index présents dans currentPasswordArray en caractères
+        for (unsigned int j =0;j<tm->getnbChars();j++)
+            currentPasswordString[j]  = tm->getCharSet().at(currentPasswordArray.at(j));
 
         // section critique
         mut.lock();
@@ -65,5 +66,11 @@ void initCounter(){
 }
 
 long long unsigned int getCounter(){
-    return nbComputed;
+    // mutex pour section critique
+    PcoMutex mut;
+    // section critique
+    mut.lock();
+    long long unsigned int tmp = nbComputed;
+    mut.unlock();
+    return tmp;
 }

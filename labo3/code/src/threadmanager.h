@@ -49,6 +49,7 @@ public:
     unsigned int getnbChars();
     unsigned int getnbToCompute();
     void setPassword(QString password);
+    QString getPassword();
     unsigned int getNbValidChars();
 
     /**
