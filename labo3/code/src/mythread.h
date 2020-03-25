@@ -2,7 +2,7 @@
 #define MYTHREAD_H
 #include "threadmanager.h"
 
-void runTask(ThreadManager *tm, long long unsigned int min, long long unsigned int max);
+void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, unsigned int nbChars, long long unsigned int min, long long unsigned int max);
 
 void initCounter();
 

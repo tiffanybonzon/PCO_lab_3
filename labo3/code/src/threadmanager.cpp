@@ -31,36 +31,8 @@ void ThreadManager::incrementPercentComputed(double percentComputed)
     emit sig_incrementPercentComputed(percentComputed);
 }
 
-QString ThreadManager::getHash(){
-    return this->hash;
-}
-
 void ThreadManager::setPassword(QString password){
     this->password = password;
-}
-
-QString ThreadManager::getSalt(){
-    return this->salt;
-}
-
-QString ThreadManager::getCharSet(){
-    return this->charset;
-}
-
-QString ThreadManager::getPassword(){
-    return this->password;
-}
-
-unsigned int ThreadManager::getnbChars(){
-    return this->nbChars;
-}
-
-unsigned int ThreadManager::getNbValidChars(){
-    return this->nbValidChars;
-}
-
-unsigned int ThreadManager::getnbToCompute(){
-    return this->nbToCompute;
 }
 
 /*
@@ -79,18 +51,15 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
     /*
      * Calcul du nombre de hash à générer
      */
-    this->nbToCompute           = intPow(charset.length(),nbChars);
-    this->nbValidChars          = charset.length();//Nombre de caractères différents pouvant composer le mot de passe
-    this->hash                  = hash;
-    this->charset               = charset;
-    this->salt                  = salt;
-    this->nbChars               = nbChars;
+    long long unsigned int nbToCompute = intPow(charset.length(),nbChars);
+    unsigned int nbValidChars = charset.length();//Nombre de caractères différents pouvant composer le mot de passe
     this->password              = "";
 
+    // initialise le compteur général des threads
     initCounter();
 
     // nombre de calculs par thread
-    long long unsigned int  step = this->nbToCompute/nbThreads;
+    long long unsigned int  step = nbToCompute/nbThreads;
 
     /* Crée les threads, on ajoutant leur pointeur à la liste.
        Les threads sont immédiatement lancés par le constructeur. */
@@ -103,20 +72,20 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
      * Il faudrait effectuer une partie calcul suplémentaire dans le thread, ce qui n'est pas souhaité.
      * ICI nous replacons juste les intervals pour que tous le charset soit couvert
      */
-    long double modulo = step / this->getNbValidChars();
-    while(modulo >= this->getNbValidChars()) modulo /= this->getNbValidChars();
+    long double modulo = step / nbValidChars;
+    while(modulo >= nbValidChars) modulo /= nbValidChars;
     if((modulo - (long long unsigned int)modulo) > 0){
-        step = (long long unsigned int)(modulo + 1) * intPow((long long unsigned int)this->nbValidChars, nbChars - 1);
+        step = (long long unsigned int)(modulo + 1) * intPow((long long unsigned int)nbValidChars, nbChars - 1);
     }
 
     for (long unsigned int i=0; i<nbThreads; i++){
         // si c'est le dernier thread on fixe le plafond au maximum
         if (i == (nbThreads - 1)){
-            max = this->nbToCompute;
+            max = nbToCompute;
         }else{
             max += step;
         }
-        PcoThread *currentThread = new PcoThread(runTask, this, min, max);
+        PcoThread *currentThread = new PcoThread(runTask, this, charset, hash, salt, nbChars, min, max);
         threadList.push_back(std::unique_ptr<PcoThread>(currentThread));
         min = max;
     }
@@ -136,15 +105,9 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
      * Durant l'attente, l'application est bloquée.
      */
     for (long unsigned int i=0; i<nbThreads; i++){
+        // normalement pac nécessaire car les threads doivent s'arrêter dès qu'un autre trouve
+        threadList[i]->requestStop();
         threadList[i]->join();
     }
-
-    if(this->password != ""){
-        return password;
-    }
-    /*
-     * Si on arrive ici, cela signifie que tous les mot de passe possibles ont
-     * été testés, et qu'aucun n'est la préimage de ce hash.
-     */
-    return QString("");
+    return this->password;
 }
