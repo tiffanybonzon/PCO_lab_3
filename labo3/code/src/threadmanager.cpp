@@ -106,7 +106,7 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
      */
     for (long unsigned int i=0; i<nbThreads; i++){
         // normalement pac nécessaire car les threads doivent s'arrêter dès qu'un autre trouve
-        threadList[i]->requestStop();
+       // threadList[i]->requestStop();
         threadList[i]->join();
     }
     return this->password;
