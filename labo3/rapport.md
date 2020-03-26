@@ -11,7 +11,7 @@ Les tâches de gestion de la barre d'avancement et de répartition des calculs e
 
 Cette variable est globale à tous les threads qui génèrent des hashs et elle est protégée par un mutex lors de son incrémentation et lors de sa lecture par le getter. 
 
-Dans un premier temps, nous avions pensé facilité le passage des nombreux arguments en transmettant un objet Threadmanager avec des getter et des setter qui seraient ensuite utilisés dans les threads. Mais après différent tests, nous avons pu remarqué que cela ralentissait considérablement les calculs. Pour cela nous avons transmis tous les arguments en copie. 
+Dans un premier temps, nous avions pensé facilité le passage des nombreux arguments en transmettant un objet Threadmanager avec des getter et des setter qui seraient ensuite utilisés dans les threads. Mais après différent tests, nous avons pu remarqué que cela ralentissait considérablement les calculs. Pour cela nous avons transmis les arguments en copie, sauf pour le mot de passe trouvé uqi lui est transmi avec le threadManager. 
 
 # Test du programme
 
@@ -71,6 +71,8 @@ de l'espace de mots de passes.
 - 1 Thread environ 10 minutes
 
 - 3 Threads environ 12 minutes
+
+- 4 threads environ 2 minutes
 
 - 7 Threads  environ 9 minutes 
 
