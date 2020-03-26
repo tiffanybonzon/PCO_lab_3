@@ -5,11 +5,10 @@
 #include <QVector>
 static volatile long long unsigned int nbComputed;
 static volatile bool wasFound;
+// mutex pour section critique
+static PcoMutex mut;
 
 void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, unsigned int nbChars, long long unsigned int min, long long unsigned int max){
-    // mutex pour section critique
-    PcoMutex mut;
-
     long long unsigned int modulo = min / charset.length();
     while(modulo >= (unsigned int)charset.length()) modulo /= charset.length();
 
@@ -65,6 +64,5 @@ void initThread(){
 
 long long unsigned int getCounter(){
     // lecture atomique donc pas besoin de protection
-    long long unsigned int tmp = nbComputed;
-    return tmp;
+    return nbComputed;
 }
