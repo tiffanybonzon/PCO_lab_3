@@ -2,6 +2,9 @@
 
 **Auteurs : Tiffany Bonzon et Jérôme Arn** 
 
+# Description des fonctionnalités du logiciel
+Le logiciel remis est une modification du logiciel donné afin de pouvoir travailler sur plusieurs threads. Il a donc les mêmes fonctionnalités qu'initialement avec, cette fois-ci, la possibilité de craquer des hash MD5 sur plusieurs threads. 
+
 # Approche  du problème 
 
 Les tâches de gestion de la barre d'avancement et de répartition des calculs entre les threads ont été attribuées au thread principal. Tandis que la génération de tous les hashs sur un intervalle donné, la comparaison avec le hash a cassé ainsi que l'incrémentation du compteur principal ont été attribués aux threads. La quantité de code relativement importante qui compose les threads s'explique car elle est intrinsèquement liée entre elle. Néanmoins la partie critique modifiée et lue par le thread principal et les threads de génération de hashs est restreinte à une variable.
@@ -14,33 +17,65 @@ Dans un premier temps, nous avions pensé facilité le passage des nombreux argu
 
 En règle générale, tous nos tests ont menés à un résultat concluant. Mais de manière aléatoire et sans que nous ayons pu en déterminer la raison, deux tests ont finis de manière inattendue. Nous n'avons pas pu reproduire la situation en mode debugg.
 
-## Pour un mot de passe de 3 caractères
+# Tests
 
-On peut voir dans ces exemples que plus on augmente le nombre de threads, plus le temps diminue. 
+## Mot de passe de 3 caractères (***)
 
-![](/home/reds/pco20_student/labo3/img/3char1th.png) 
+On peut voir dans ces exemples que plus on augmente le nombre de threads, plus le temps diminue.  
 
-![](/home/reds/pco20_student/labo3/img/3char3th.png)
+- 1 Thread 570 ms
 
-![](/home/reds/pco20_student/labo3/img/3char10th.png)
+- 3 Threads 360 ms
 
-## Pour un mot de passe de 4 caractères
+- 7 Threads 280 ms
 
-On peut voir dans ces exemples que plus on augmente le nombre de threads, plus le temps diminue. 
+## Mot de passe de 4 caractères (****)
 
-![](/home/reds/pco20_student/labo3/img/4char1th.png)
+On peut voir dans ces exemples que plus on augmente le nombre de threads, plus le temps diminue.
 
-![](/home/reds/pco20_student/labo3/img/4char3th.png)
+- 1 Thread 31947 ms
 
-![](/home/reds/pco20_student/labo3/img/4char5th.png)
+- 3 Threads 12087 ms
 
-## Pour un mot de passe de 5 caractères
+- 7 Threads 5906 ms
 
-On peut voir que la recherche avec 5 threads est presque trois fois plus lente que la recherche avec 7 threads. Lors de nos tests, nous avons constaté qu'avec 10 threads cela ne fonctionnait pas pour une raison que nous n'avons pas pu éclaircir durant le temps donné. 
+## Mot de passe de 5 caractères (*\*\*\*\*)
 
-![](/home/reds/pco20_student/labo3/img/5char5th.png)
+- 1 Thread environ 28 minutes 
 
-![](/home/reds/pco20_student/labo3/img/5char7th.png)
+- 3 Threads environ 14 minutes 
 
-# Conclusion
+- 7 Threads environ 10 minutes 
 
+Nous avons également testé des mots de passes n'étant pas aux extrémités
+de l'espace de mots de passes.
+
+## Mot de passe de 3 caractères (Mix)
+
+- 1 Thread 281 ms 
+
+- 3 Threads 111 ms
+
+- 7 Threads 300 ms
+
+## Mot de passe de 4 caractères (test)
+
+- 1 Thread 9434 ms
+
+- 3 Threads 10823 ms 
+
+- 7 Threads 8805 ms
+
+## Mot de passe 5 caractère (swIss)
+
+- 1 Thread environ 10 minutes
+
+- 3 Threads environ 12 minutes
+
+- 7 Threads  environ 9 minutes 
+
+Nous avons également testé le cas ou le mot de passe n'est pas trouvé (par exemple en passant le hash du mot de passe "test", puis en demandant au programme de chercher un mot de passe à 1 caractère) pour s'assurer que la bar de progrès fonctionne bien comme voulu. Le fait d'avoir un sel ne change rien au temps ou à la complexité, les cas testés ne sont donc pas discutés.
+
+# Conclusion 
+
+On peut constaté que dans la majorité des cas, si on a plus de threads le temps de cassage est plus rapide. Mais dans d'autre cela va plus lentement. Cela peut venir de l'ordonnancement des threads et la position du mot recherché dans l'intervalle que doit calculé le thread. 

@@ -56,7 +56,7 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
     this->password              = "";
 
     // initialise le compteur général des threads
-    initCounter();
+    initThread();
 
     // nombre de calculs par thread
     long long unsigned int  step = nbToCompute/nbThreads;
@@ -85,11 +85,13 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
         }else{
             max += step;
         }
+        // création des threads
         PcoThread *currentThread = new PcoThread(runTask, this, charset, hash, salt, nbChars, min, max);
         threadList.push_back(std::unique_ptr<PcoThread>(currentThread));
         min = max;
     }
 
+    // attente que les threads aients fini
     while (getCounter() < nbToCompute && this->password == "") {
         /*
          * Tous les 1000 hash calculés, on notifie qui veut bien entendre
@@ -98,7 +100,6 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
         if ((getCounter() % 1000) == 0) {
             incrementPercentComputed((double)1000/nbToCompute);
         }
-
     }
 
     /* Attends la fin de chaque thread et libère la mémoire associée.
@@ -106,8 +107,9 @@ QString ThreadManager::startHacking(QString charset, QString salt,QString hash,u
      */
     for (long unsigned int i=0; i<nbThreads; i++){
         // normalement pac nécessaire car les threads doivent s'arrêter dès qu'un autre trouve
-       // threadList[i]->requestStop();
         threadList[i]->join();
     }
+    /* Vide la liste de pointeurs de threads */
+    threadList.clear();
     return this->password;
 }

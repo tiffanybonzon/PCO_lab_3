@@ -4,7 +4,7 @@
 
 void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, unsigned int nbChars, long long unsigned int min, long long unsigned int max);
 
-void initCounter();
+void initThread();
 
 long long unsigned int getCounter();
 #endif // MYTHREAD_H

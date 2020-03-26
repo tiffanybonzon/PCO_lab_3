@@ -4,9 +4,9 @@
 #include <QCryptographicHash>
 #include <QVector>
 static volatile long long unsigned int nbComputed;
-static volatile bool wasFound = false;
+static volatile bool wasFound;
 
-void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, unsigned int nbChars,long long unsigned int min, long long unsigned int max){
+void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, unsigned int nbChars, long long unsigned int min, long long unsigned int max){
     // mutex pour section critique
     PcoMutex mut;
 
@@ -51,8 +51,6 @@ void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, uns
         //On traduit les index présents dans currentPasswordArray en caractères
         for (unsigned int j =0;j < nbChars;j++)
             currentPasswordString[j]  = charset.at(currentPasswordArray.at(j));
-
-        // section critique
         mut.lock();
         nbComputed++;
         mut.unlock();
@@ -60,16 +58,13 @@ void runTask(ThreadManager *tm, QString charset, QString hash, QString salt, uns
     }
 }
 
-void initCounter(){
+void initThread(){
     nbComputed = 0;
+    wasFound = false;
 }
 
 long long unsigned int getCounter(){
-    // mutex pour section critique
-    PcoMutex mut;
-    // section critique
-    mut.lock();
+    // lecture atomique donc pas besoin de protection
     long long unsigned int tmp = nbComputed;
-    mut.unlock();
     return tmp;
 }
