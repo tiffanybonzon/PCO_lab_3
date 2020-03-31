@@ -6,10 +6,12 @@
 #include <pcosynchro/pcothread.h>
 
 static int nbRuns = 0;
+static PcoSemaphore *sem = new PcoSemaphore(0);
 
 void taskRun(int id) {
-
+    sem->acquire();
     nbRuns ++;
+    sem->release();
     logger() << "Tache" << id << "executes" << std::endl;
 }
 
@@ -21,7 +23,6 @@ TEST(Synchro, Standard)
     std::vector<std::unique_ptr<PcoThread>> threads(NB_THREADS);
 
     nbRuns = 0;
-
     for (i = 0; i < NB_THREADS; i++) {
         threads[i] = std::make_unique<PcoThread>(taskRun, i);
     }
@@ -29,6 +30,7 @@ TEST(Synchro, Standard)
     PcoThread::usleep(1000000);
 
     EXPECT_EQ(nbRuns, 0);
+    sem->release();
 
     for (i = 0; i < NB_THREADS; i++)
         threads[i]->join();
