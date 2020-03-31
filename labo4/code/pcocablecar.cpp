@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Jérôme Arn, Prénom Nom
 
 #include "pcocablecar.h"
 #include <pcosynchro/pcothread.h>
@@ -28,22 +28,22 @@ PcoCableCar::~PcoCableCar()
 
 void PcoCableCar::waitForCableCar(int id)
 {
-
+    qDebug() << "Skieur" << id << "attend la cabine";
 }
 
 void PcoCableCar::waitInsideCableCar(int id)
 {
-
+    qDebug() << "Skieur" << id << "attend dans la cabine";
 }
 
 void PcoCableCar::goIn(int id)
 {
-
+    qDebug() << "Skieur" << id << "va dans la cabine";
 }
 
 void PcoCableCar::goOut(int id)
 {
-
+    qDebug() << "Skieur" << id << "sort de la cabine";
 }
 
 bool PcoCableCar::isInService()
@@ -53,7 +53,8 @@ bool PcoCableCar::isInService()
 
 void PcoCableCar::endService()
 {
-
+    inService = false;
+    //TODO release les threads en attente de la cabine
 }
 
 void PcoCableCar::goUp()

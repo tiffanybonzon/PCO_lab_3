@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Jérôme Arn, Prénom Nom
 
 #include "skierbehavior.h"
 
@@ -17,7 +17,13 @@ int SkierBehavior::nextId = 1;
 
 void SkierBehavior::run()
 {
-    // A vous d'ajouter le comportement du skieur
+    while(cableCar->isInService()){
+        cableCar->waitForCableCar(this->id);
+        cableCar->goIn(this->id);
+        cableCar->waitInsideCableCar(this->id);
+        cableCar->goOut(this->id);
+        this->goDownTheMountain();
+    }
 }
 
 void SkierBehavior::goDownTheMountain()

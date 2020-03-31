@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Jérôme Arn, Prénom Nom
 
 #ifndef PCOCABLECAR_H
 #define PCOCABLECAR_H
