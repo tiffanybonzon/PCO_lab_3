@@ -20,8 +20,7 @@ static PcoSemaphore *waitInsideCar;
 static PcoSemaphore *protectNbSkierWaiting = new PcoSemaphore(1);
 static PcoSemaphore *protectNbSkierInside = new PcoSemaphore(1);
 // semaphore d'attente et de synchronisation pour que tous les skieurs soient sortis
-static PcoSemaphore *synchroIn = new PcoSemaphore(0);
-static PcoSemaphore *SynchroOut = new PcoSemaphore(0);
+static PcoSemaphore *synchro = new PcoSemaphore(0);
 
 /**
  * @brief PcoCableCar::PcoCableCar
@@ -80,7 +79,7 @@ void PcoCableCar::goIn(int id)
     protectNbSkierInside->acquire();
     nbSkiersInside++;
     protectNbSkierInside->release();
-    synchroIn->release();
+    synchro->release();
 }
 
 /**
@@ -93,7 +92,7 @@ void PcoCableCar::goOut(int id)
     protectNbSkierInside->acquire();
     nbSkiersInside--;
     protectNbSkierInside->release();
-    SynchroOut->release();
+    synchro->release();
 }
 
 /**
@@ -144,7 +143,7 @@ void PcoCableCar::loadSkiers()
     unsigned nbToEnter = nbSkiersWaiting > capacity? capacity: nbSkiersWaiting;
     for(unsigned i = 0;i < nbToEnter;i++){
         waitForCar->release();
-        synchroIn->acquire();
+        synchro->acquire();
     }
 }
 
@@ -157,6 +156,6 @@ void PcoCableCar::unloadSkiers()
     unsigned i = nbSkiersInside;
     for(;i != 0;i--){
         waitInsideCar->release();
-        SynchroOut->acquire();
+        synchro->acquire();
     }
 }
