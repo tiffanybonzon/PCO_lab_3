@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Jérôme Arn, Prénom Nom
+// Auteurs : Jérôme Arn, Tiffany Bonzon
 
 #include "skierbehavior.h"
 
@@ -19,6 +19,9 @@ void SkierBehavior::run()
 {
     while(cableCar->isInService()){
         cableCar->waitForCableCar(this->id);
+        // dans le cas où les threads sont libérés car le télécabine est fermé
+        if(!cableCar->isInService())
+            break;
         cableCar->goIn(this->id);
         cableCar->waitInsideCableCar(this->id);
         cableCar->goOut(this->id);

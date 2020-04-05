@@ -8,8 +8,8 @@
 // Vous pouvez aussi changer l'ordre de lancement des threads ou ajouter des délais aléatoires
 // avant vos lancements etc. pour effectuer des tests.
 //
-// Modifications :
-// Auteurs : Jérôme Arn
+// Modifications : nombre de skieurs et capacité du télé cabine
+// Auteurs : Jérôme Arn, Tiffany Bonzon
 
 #include <QDebug>
 
@@ -20,8 +20,8 @@
 #include "skierbehavior.h"
 #include "cablecarbehavior.h"
 
-constexpr unsigned int NB_SKIERS = 10;
-constexpr unsigned int CABLE_CAR_CAPACITY = 5;
+constexpr unsigned int NB_SKIERS = 100;
+constexpr unsigned int CABLE_CAR_CAPACITY = 10;
 
 int main()
 {

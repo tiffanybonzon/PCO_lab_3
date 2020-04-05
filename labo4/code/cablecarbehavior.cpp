@@ -3,11 +3,16 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Jérôme Arn, Prénom Nom
+// Auteurs : Jérôme Arn, Tiffany Bonzon
 
 #include "cablecarbehavior.h"
 
 void CableCarBehavior::run()
 {
-    // A vous d'ajouter le comportement du télécabine
+    while(cableCar->isInService()){
+        cableCar->loadSkiers();
+        cableCar->goUp();
+        cableCar->unloadSkiers();
+        cableCar->goDown();
+    }
 }
