@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Jérôme Tiffany Bonzon
+// Auteurs : Jérôme Arn, Tiffany Bonzon
 
 #ifndef PCOCABLECAR_H
 #define PCOCABLECAR_H

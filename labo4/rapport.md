@@ -33,3 +33,4 @@ Pour être sur que la cabine ne descend pas ou ne  monte pas avant que tous les 
 Lors de la décrémentation ou de l'incrémentation des variables nbSkierInside et nbSkierWaiting, nous protégeons leurs accès par deux sémaphores en mode mutex. Même si le risque que deux threads modifie en même temps l'accès, nous nous assurons que cela est protéger. 
 
 ## Tests effectués
+

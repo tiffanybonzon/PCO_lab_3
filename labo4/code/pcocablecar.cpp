@@ -49,7 +49,7 @@ PcoCableCar::~PcoCableCar()
  */
 void PcoCableCar::waitForCableCar(int id)
 {
-    qDebug() << id << " a froid car il attend";
+    qDebug() << id << "attend le télécabine.";
     protectNbSkierWaiting->acquire();
     nbSkiersWaiting++;
     protectNbSkierWaiting->release();
@@ -62,7 +62,7 @@ void PcoCableCar::waitForCableCar(int id)
  */
 void PcoCableCar::waitInsideCableCar(int id)
 {
-    qDebug() << id << " attend dans le télé cabine";
+    qDebug() << id << "attend dans le télécabine.";
     waitInsideCar->acquire();
 }
 
@@ -72,7 +72,7 @@ void PcoCableCar::waitInsideCableCar(int id)
  */
 void PcoCableCar::goIn(int id)
 {
-    qDebug() << id << " rentre dans le télé cabine";
+    qDebug() << id << "[<- GO IN] rentre dans le télécabine";
     protectNbSkierWaiting->acquire();
     nbSkiersWaiting--;
     protectNbSkierWaiting->release();
@@ -88,7 +88,7 @@ void PcoCableCar::goIn(int id)
  */
 void PcoCableCar::goOut(int id)
 {
-    qDebug() << id << " sort du télé cabine et va skier";
+    qDebug() << id << "[-> GO OUT] sort du télécabine et va skier";
     protectNbSkierInside->acquire();
     nbSkiersInside--;
     protectNbSkierInside->release();
@@ -121,7 +121,7 @@ void PcoCableCar::endService()
  */
 void PcoCableCar::goUp()
 {
-    qDebug() << "Le télécabine monte";
+    qDebug() << "--------------------------Le télécabine monte--------------------------";
     PcoThread::usleep((MIN_SECONDS_DELAY + QRandomGenerator::system()->bounded(MAX_SECONDS_DELAY + 1)) * SECOND_IN_MICROSECONDS);
 }
 
@@ -130,7 +130,7 @@ void PcoCableCar::goUp()
  */
 void PcoCableCar::goDown()
 {
-    qDebug() << "Le télécabine descend";
+    qDebug() << "--------------------------Le télécabine descend--------------------------";
     PcoThread::usleep((MIN_SECONDS_DELAY + QRandomGenerator::system()->bounded(MAX_SECONDS_DELAY + 1)) * SECOND_IN_MICROSECONDS);
 }
 
