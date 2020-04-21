@@ -4,7 +4,8 @@ SCRIPT=${BASH_SOURCE[0]}
 SCRIPTPATH=$(realpath $(dirname $SCRIPT))
 PROJECT_DIR=project_student
 PROJECT_FILE=QtrainSimStudent.pro
-SOURCE_DIR=${PROJECT_DIR}/src
+PROG1_DIR=${PROJECT_DIR}/prog1
+PROG2_DIR=${PROJECT_DIR}/prog2
 REPORT_FILE=rendu.pdf
 ARCHIVE=rendu.tar.gz
 
@@ -23,4 +24,4 @@ then
 fi
 
 echo "The following files are archived in $ARCHIVE : "
-tar --exclude="$ARCHIVE" --exclude='*.o' --exclude='*.user' -czvf $ARCHIVE ${PROJECT_DIR}/${PROJECT_FILE} $SOURCE_DIR $REPORT_FILE
+tar --exclude="$ARCHIVE" --exclude='*.o' --exclude='*.user' -czvf $ARCHIVE ${PROJECT_DIR}/${PROJECT_FILE} $PROG1_DIR $PROG2_DIR $REPORT_FILE
