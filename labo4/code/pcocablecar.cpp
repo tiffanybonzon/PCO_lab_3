@@ -109,6 +109,7 @@ bool PcoCableCar::isInService()
  */
 void PcoCableCar::endService()
 {
+    qDebug() << "-----------------------[ANNONCE] Le télécabine s'arrête-----------------------";
     // on ferme le télé cabine, on libère les skieurs qui attendent
     inService = false;
     for(unsigned i = 0;i < nbSkiersWaiting;i++){
@@ -140,7 +141,7 @@ void PcoCableCar::goDown()
 void PcoCableCar::loadSkiers()
 {
     // chargement des skieurs et attente qu'ils soient tous rentrer
-    unsigned nbToEnter = nbSkiersWaiting > capacity? capacity: nbSkiersWaiting;
+    unsigned nbToEnter = std::min(capacity, nbSkiersWaiting);
     for(unsigned i = 0;i < nbToEnter;i++){
         waitForCar->release();
         synchro->acquire();
@@ -153,8 +154,7 @@ void PcoCableCar::loadSkiers()
 void PcoCableCar::unloadSkiers()
 {
     // sortie des skieurs et attente qu'ils soient tous sorti
-    unsigned i = nbSkiersInside;
-    for(;i != 0;i--){
+    for(unsigned i = nbSkiersInside; i > 0; --i){
         waitInsideCar->release();
         synchro->acquire();
     }
