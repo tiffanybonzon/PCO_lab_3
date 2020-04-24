@@ -47,7 +47,7 @@ L'attente se situe au niveau de `waitForCableCar()` et `waitInsideCableCar()`, g
 
 - Le fonctionnement est le même que pour `waitForCableCar()` : Un skieur attendant dans la cabine effectue un `acquire()` sur waitInsideCar qui est à 0 et donc bloque le thread, puis la méthode `unloadSkiers()` effectue un `release()` pour chaque skieur déchargé, permettant ainsi au thread de se résumer
 
-- Ceci pour s'assurer que les skieurs ne déscendent pas de la cabine en cours de montée, ou ne restent pas bloqués dans la cabine
+- Ceci pour s'assurer que les skieurs ne descendent pas de la cabine en cours de montée, ou ne restent pas bloqués dans la cabine
 
   
 
@@ -67,7 +67,7 @@ Ce sémaphore est décrémenté (bloqué) lorsque chaque skieur est chargé ou d
 
 ### Protection des variables
 
-Lors de la décrémentation ou de l'incrémentation des variables nbSkierInside et nbSkierWaiting, nous protégeons leurs accès par deux sémaphores en mode mutex. Ainsi, si plusieurs threads essayent de modifier en même temps ces variables, nous nous assurons qu'elles restent dans un état cohérant par rapport au programme. 
+Lors de la décrémentation ou de l'incrémentation des variables nbSkierInside et nbSkierWaiting, nous protégeons leurs accès par deux sémaphores en mode mutex. Ainsi, si plusieurs threads essayent de modifier en même temps ces variables, nous nous assurons qu'elles restent dans un état cohérent par rapport au programme. 
 
 ## Tests effectués
 
@@ -75,32 +75,32 @@ Lors de la décrémentation ou de l'incrémentation des variables nbSkierInside 
 
   - Afin de tester ce fonctionnement, nous avons lancer le programme avec 0 skieurs
 
-    ![](img/Test_monteVide.png)
+    ![](./img/img/Test_monteVide.png)
 
 - Une fois la journée terminée, la cabine termine à la station
 
-  - Pour tester ce comportement, nous avons ordonner l'arrêt du télécabine lorsquîl est en train de monter, et lorsqu'il est en train de descendre (première image) pour s'assurer qu'il ne faiit pas un aller-retour supplémentaire
+  - Pour tester ce comportement, nous avons ordonner l'arrêt du télécabine lorsque qu'il est en train de monter, et lorsqu'il est en train de descendre (première image) pour s'assurer qu'il ne fait pas un aller-retour supplémentaire
 
-    ![](img/Test_termineStation.png)
+    ![](./img/img/Test_termineStation.png)
 
 - Si la journée se termine alors que des skieurs sont dans la cabine, elle les décharge avant de redescendre
 
-  - Pour tester ceci, nous ordonons l'arrêt de la cabine pendant qu'elle monte des skieurs au sommet
+  - Pour tester ceci, nous ordonnons l'arrêt de la cabine pendant qu'elle monte des skieurs au sommet
 
-    ![](img/Test_terminePleine.png)
+    ![](./img/img/Test_terminePleine.png)
 
 - Pas de dépassement de capacité de la cabine
 
-  - Testé en lancant le programme avec plus de skieurs que la capacité max de la cabine
+  - Testé en lançant le programme avec plus de skieurs que la capacité max de la cabine
 
-    ![](img/Test_capaciteMax.png)
+    ![](./img/img/Test_capaciteMax.png)
 
 - Les skieurs attendant la cabine alors que l'annonce d'arrêt est fait, rentrent chez eux
 
   - Nous avons tester ce cas en arrêtant la cabine alors que des skieurs l'attendaient
 
-    ![](img/Test_termineAttente.png)
+    ![](./img/img/Test_termineAttente.png)
 
-- Seul les skieurs attendant déjà la cabine penvent entrer une fois qu'elle est à la station
+- Seul les skieurs attendant déjà la cabine peut entrer une fois qu'elle est à la station
   
   - Dans les scénarios que nous avons tester, nous n'avons jamais eu le cas d'un skieur arrivant à la station juste après que la cabine ait commencer à faire rentrer les skieurs
