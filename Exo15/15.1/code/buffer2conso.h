@@ -2,19 +2,40 @@
 #define BUFFER2CONSO_H
 
 #include <pcosynchro/pcosemaphore.h>
-
+#include <QDebug>
 #include "abstractbuffer.h"
 
 template<typename T> class Buffer2ConsoSemaphore : public AbstractBuffer<T> {
 protected:
-
+    std::vector<T> tab;
+    PcoSemaphore waitNotEmpty;
+    PcoSemaphore waitNotFull;
+    PcoSemaphore mutex;
 public:
-    Buffer2ConsoSemaphore() {}
+    Buffer2ConsoSemaphore(): mutex(1), waitNotEmpty(0), waitNotFull(2){
+        tab.resize(1);
+    }
 
     virtual ~Buffer2ConsoSemaphore() {}
 
-    virtual void put(T item) {}
-    virtual T get(void) {}
+    virtual void put(T item) {
+        waitNotFull.acquire();
+        waitNotFull.acquire();
+        mutex.acquire();
+        tab.at(0) = item;
+        waitNotEmpty.release();
+        waitNotEmpty.release();
+        mutex.release();
+    }
+    virtual T get(void) {
+        T item;
+        waitNotEmpty.acquire();
+        mutex.acquire();
+        item = tab.at(0);
+        waitNotFull.release();
+        mutex.release();
+        return item;
+    }
 };
 
 
