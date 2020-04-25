@@ -158,10 +158,7 @@ protected:
 }
 };
 
-using MyTypes = ::testing::Types<Buffer2ConsoSemaphore<int>,
-                                 Buffer2ConsoMesa<int>,
-                                 Buffer2ConsoHoare<int>
-                                    >;
+using MyTypes = ::testing::Types<Buffer2ConsoSemaphore<int>>;
 TYPED_TEST_CASE(ProdConsTest, MyTypes);
 
 TYPED_TEST(ProdConsTest, Standard) {
