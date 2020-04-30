@@ -11,6 +11,7 @@
 #include "locomotive.h"
 #include "launchable.h"
 #include "sharedsectioninterface.h"
+#include <QVector>
 
 /**
  * @brief La classe LocomotiveBehavior représente le comportement d'une locomotive
@@ -22,7 +23,8 @@ public:
      * \brief locomotiveBehavior Constructeur de la classe
      * \param loco la locomotive dont on représente le comportement
      */
-    LocomotiveBehavior(Locomotive& loco, std::shared_ptr<SharedSectionInterface> sharedSection /*, autres paramètres éventuels */) : loco(loco), sharedSection(sharedSection) {
+    LocomotiveBehavior(Locomotive& loco, std::shared_ptr<SharedSectionInterface> sharedSection , QVector<int> contactList/*, autres paramètres éventuels */) :
+        loco(loco), sharedSection(sharedSection), contactList(contactList){
         // Eventuel code supplémentaire du constructeur
     }
 
@@ -52,6 +54,7 @@ protected:
      */
     std::shared_ptr<SharedSectionInterface> sharedSection;
 
+    QVector<int> contactList;
     /*
      * Vous êtes libres d'ajouter des méthodes ou attributs
      *

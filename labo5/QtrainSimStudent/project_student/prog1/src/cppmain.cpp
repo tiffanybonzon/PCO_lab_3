@@ -24,7 +24,7 @@ static Locomotive locoB(42 /* Numéro (pour commande trains sur maquette réelle
 //Arret d'urgence
 void emergency_stop()
 {
-    // arrêt des deux loco
+    // arrêt des deux loco, exctinction des phares et affichage d'un message
     locoA.arreter();
     locoB.arreter();
     locoA.eteindrePhares();
@@ -38,6 +38,9 @@ void emergency_stop()
 //Fonction principale
 int cmain()
 {
+    QVector<int> contactLocoB {22,21,20,19,13,12,11,10,4,3,2,1,31,30,29,28};
+    QVector<int> contactLocoA {25,24,23,16,15,14,7,6,5,34,33,32};
+
     /************
      * Maquette *
      ************/
@@ -92,6 +95,7 @@ int cmain()
     // Exemple de position de départ
     locoB.fixerPosition(22, 28);
 
+
     /***********
      * Message *
      **********/
@@ -107,9 +111,9 @@ int cmain()
     std::shared_ptr<SharedSectionInterface> sharedSection = std::make_shared<SharedSection>();
 
     // Création du thread pour la loco 0
-    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection /*, autres paramètres ...*/);
+    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection,contactLocoA /*, autres paramètres ...*/);
     // Création du thread pour la loco 1
-    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection /*, autres paramètres ...*/);
+    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection,contactLocoB /*, autres paramètres ...*/);
 
     // Lanchement des threads
     afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoA.numero())));

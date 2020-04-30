@@ -8,6 +8,8 @@
 #include "locomotivebehavior.h"
 #include "ctrain_handler.h"
 
+#define NB_TOUR_CHANGEMENT_SENS 2
+
 void LocomotiveBehavior::run()
 {
     //Initialisation de la locomotive
@@ -22,7 +24,24 @@ void LocomotiveBehavior::run()
     //sharedSection->getAccess(loco);
     //sharedSection->leave(loco);
 
-    while(1) {}
+
+    // la loco début par attendre le premier prochain contact
+    attendre_contact(contactList.at(0));
+    while(1) {
+        // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
+        for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
+            for(int j = 1; j < contactList.size(); j++)
+                attendre_contact(contactList.at(j));
+
+        loco.inverserSens();
+
+        // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
+        for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
+            for(int j = contactList.size() - 2; j >= 0; j--)
+                attendre_contact(contactList.at(j));
+
+        loco.inverserSens();
+    }
 }
 
 void LocomotiveBehavior::printStartMessage()
