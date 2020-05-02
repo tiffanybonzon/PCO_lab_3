@@ -38,8 +38,8 @@ void emergency_stop()
 //Fonction principale
 int cmain()
 {
-    QVector<int> contactLocoB {22,21,20,19,13,12,11,10,4,3,2,1,31,30,29,28};
-    QVector<int> contactLocoA {25,24,23,16,15,14,7,6,5,34,33,32};
+    QVector<int> contactLocoB {21,20,19,13,15,10,4,3,2,1,31,30,29,28,22};
+    QVector<int> contactLocoA {26,24,23,16,15,18,17,27};
 
     /************
      * Maquette *
@@ -63,17 +63,22 @@ int cmain()
     diriger_aiguillage(4,  TOUT_DROIT, 0);
     diriger_aiguillage(5,  TOUT_DROIT, 0);
     diriger_aiguillage(6,  TOUT_DROIT, 0);
-    diriger_aiguillage(7,  TOUT_DROIT, 0);
+    diriger_aiguillage(7,  DEVIE, 0);
+    //loco 42
+    diriger_aiguillage(8,  TOUT_DROIT     , 0);
+    diriger_aiguillage(9,  TOUT_DROIT     , 0);
+    // loco 7
     diriger_aiguillage(8,  DEVIE     , 0);
     diriger_aiguillage(9,  DEVIE     , 0);
-    diriger_aiguillage(10, TOUT_DROIT, 0);
-    diriger_aiguillage(11, TOUT_DROIT, 0);
+
+    diriger_aiguillage(10, DEVIE, 0);
+    diriger_aiguillage(11, DEVIE, 0);
     diriger_aiguillage(12, TOUT_DROIT, 0);
     diriger_aiguillage(13, TOUT_DROIT, 0);
     diriger_aiguillage(14, DEVIE     , 0);
     diriger_aiguillage(15, DEVIE     , 0);
     diriger_aiguillage(16, TOUT_DROIT, 0);
-    diriger_aiguillage(17, TOUT_DROIT, 0);
+    diriger_aiguillage(17, DEVIE, 0);
     diriger_aiguillage(18, TOUT_DROIT, 0);
     diriger_aiguillage(19, TOUT_DROIT, 0);
     diriger_aiguillage(20, DEVIE     , 0);
@@ -89,11 +94,11 @@ int cmain()
 
     // Loco 0
     // Exemple de position de départ
-    locoA.fixerPosition(25, 32);
+    locoA.fixerPosition(26, 27);
 
     // Loco 1
     // Exemple de position de départ
-    locoB.fixerPosition(22, 28);
+    locoB.fixerPosition(21, 22);
 
 
     /***********

@@ -29,7 +29,9 @@ public:
      * Initialisez vos éventuels attributs ici, sémaphores etc.
      */
     SharedSection() {
-        // TODO
+        isFree = true;
+        mutexIsFree = new PcoSemaphore(1);
+        QVector section {23,16};
     }
 
     /**
@@ -76,8 +78,8 @@ public:
     /* A vous d'ajouter ce qu'il vous faut */
 
 private:
-    // Méthodes privées ...
-    // Attributes privés ...
+    bool isFree;
+    PcoSemaphore *mutexIsFree;
 };
 
 

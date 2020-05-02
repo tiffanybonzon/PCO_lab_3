@@ -8,7 +8,7 @@
 #include "locomotivebehavior.h"
 #include "ctrain_handler.h"
 
-#define NB_TOUR_CHANGEMENT_SENS 2
+#define NB_TOUR_CHANGEMENT_SENS 1
 
 void LocomotiveBehavior::run()
 {
@@ -17,12 +17,10 @@ void LocomotiveBehavior::run()
     loco.demarrer();
     loco.afficherMessage("Ready!");
 
-    /* A vous de jouer ! */
-
     // Vous pouvez appeler les méthodes de la section partagée comme ceci :
-    //sharedSection->request(loco);
-    //sharedSection->getAccess(loco);
-    //sharedSection->leave(loco);
+//    sharedSection->request(loco,SharedSectionInterface::Priority::LowPriority);
+//    sharedSection->getAccess(loco,SharedSectionInterface::Priority::LowPriority);
+//    sharedSection->leave(loco);
 
 
     // la loco début par attendre le premier prochain contact
@@ -30,15 +28,31 @@ void LocomotiveBehavior::run()
     while(1) {
         // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
-            for(int j = 1; j < contactList.size(); j++)
+            for(int j = 1; j < contactList.size(); j++){
                 attendre_contact(contactList.at(j));
+                if(contactList.at(j) == 13||  contactList.at(j) == 18){
+                    diriger_aiguillage(8,  TOUT_DROIT     , 0);
+                    diriger_aiguillage(9,  TOUT_DROIT     , 0);
+                }else if(contactList.at(j) == 10 || contactList.at(j) == 16){
+                    diriger_aiguillage(8,  DEVIE     , 0);
+                    diriger_aiguillage(9,  DEVIE     , 0);
+                }
+            }
 
         loco.inverserSens();
 
         // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
-            for(int j = contactList.size() - 2; j >= 0; j--)
+            for(int j = contactList.size() - 2; j >= 0; j--){
                 attendre_contact(contactList.at(j));
+                if(contactList.at(j) == 10|| contactList.at(j) == 16){
+                    diriger_aiguillage(8,  TOUT_DROIT     , 0);
+                    diriger_aiguillage(9,  TOUT_DROIT     , 0);
+                }else if(contactList.at(j) == 13 || contactList.at(j) == 18){
+                    diriger_aiguillage(8,  DEVIE     , 0);
+                    diriger_aiguillage(9,  DEVIE     , 0);
+                }
+            }
 
         loco.inverserSens();
     }
