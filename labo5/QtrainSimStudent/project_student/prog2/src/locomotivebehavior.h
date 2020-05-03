@@ -11,6 +11,7 @@
 #include "locomotive.h"
 #include "launchable.h"
 #include "sharedsectioninterface.h"
+#include <QVector>
 
 /**
  * @brief La classe LocomotiveBehavior représente le comportement d'une locomotive
@@ -22,8 +23,8 @@ public:
      * \brief locomotiveBehavior Constructeur de la classe
      * \param loco la locomotive dont on représente le comportement
      */
-    LocomotiveBehavior(Locomotive& loco, std::shared_ptr<SharedSectionInterface> sharedSection /*, autres paramètres éventuels */) : loco(loco), sharedSection(sharedSection) {
-        // Eventuel code supplémentaire du constructeur
+    LocomotiveBehavior(Locomotive& loco, std::shared_ptr<SharedSectionInterface> sharedSection , QVector<int> contactList, unsigned int contatPointsTD,unsigned int contactPointsD) :
+        loco(loco), sharedSection(sharedSection), contactList(contactList),CONTACT_POINTS_1(contatPointsTD), CONTACT_POINTS_2(contactPointsD){
     }
 
 protected:
@@ -52,11 +53,20 @@ protected:
      */
     std::shared_ptr<SharedSectionInterface> sharedSection;
 
+    QVector<int> contactList;
     /*
      * Vous êtes libres d'ajouter des méthodes ou attributs
      *
      * Par exemple la priorité ou le parcours
      */
+private:
+    void getAccessSS(unsigned int actualContact, unsigned int pointsTD, unsigned int pointsD);
+    // contact auquel on change l'aiguillage sur tout droit
+    const unsigned int CONTACT_POINTS_1;
+    // contact auquel on change l'aiguillage sur dévié
+    const unsigned int CONTACT_POINTS_2;
+    // garde une trace de la demande de bloquage de la section paratagée
+    bool sharedSectionRequested = false;
 };
 
 #endif // LOCOMOTIVEBEHAVIOR_H

@@ -58,7 +58,7 @@ public:
      */
     void getAccess(Locomotive &loco, Priority priority) override {
         // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
+        //afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
         while(1){
             mutexIsFree->acquire();
             if (!isFree){
@@ -92,7 +92,7 @@ public:
      * @param loco La locomotive qui quitte la section partagée
      */
     void leave(Locomotive& loco) override {
-        afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
+        //afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
         // libération de la zone partagée et envoi d'un "signal" à la locolotive qui attend
         mutexIsFree->acquire();
         isFree = true;

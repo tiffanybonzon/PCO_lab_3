@@ -24,8 +24,13 @@ static Locomotive locoB(42 /* Numéro (pour commande trains sur maquette réelle
 //Arret d'urgence
 void emergency_stop()
 {
-    // TODO
-
+    // arrêt des deux loco, exctinction des phares et affichage d'un message
+    locoA.arreter();
+    locoB.arreter();
+    locoA.eteindrePhares();
+    locoB.eteindrePhares();
+    locoA.afficherMessage("Arrêt d'urgence locoA");
+    locoB.afficherMessage("Arrêt d'urgence locoB");
     afficher_message("\nSTOP!");
 }
 
@@ -33,6 +38,9 @@ void emergency_stop()
 //Fonction principale
 int cmain()
 {
+    QVector<int> contactLocoB {21,20,19,13,15,10,4,3,2,1,31,30,29,28,22};
+    QVector<int> contactLocoA {26,24,23,16,15,18,17,27};
+
     /************
      * Maquette *
      ************/
@@ -55,17 +63,22 @@ int cmain()
     diriger_aiguillage(4,  TOUT_DROIT, 0);
     diriger_aiguillage(5,  TOUT_DROIT, 0);
     diriger_aiguillage(6,  TOUT_DROIT, 0);
-    diriger_aiguillage(7,  TOUT_DROIT, 0);
+    diriger_aiguillage(7,  DEVIE, 0);
+    //loco 42
+    diriger_aiguillage(8,  TOUT_DROIT     , 0);
+    diriger_aiguillage(9,  TOUT_DROIT     , 0);
+    // loco 7
     diriger_aiguillage(8,  DEVIE     , 0);
     diriger_aiguillage(9,  DEVIE     , 0);
-    diriger_aiguillage(10, TOUT_DROIT, 0);
-    diriger_aiguillage(11, TOUT_DROIT, 0);
+
+    diriger_aiguillage(10, DEVIE, 0);
+    diriger_aiguillage(11, DEVIE, 0);
     diriger_aiguillage(12, TOUT_DROIT, 0);
     diriger_aiguillage(13, TOUT_DROIT, 0);
     diriger_aiguillage(14, DEVIE     , 0);
     diriger_aiguillage(15, DEVIE     , 0);
     diriger_aiguillage(16, TOUT_DROIT, 0);
-    diriger_aiguillage(17, TOUT_DROIT, 0);
+    diriger_aiguillage(17, DEVIE, 0);
     diriger_aiguillage(18, TOUT_DROIT, 0);
     diriger_aiguillage(19, TOUT_DROIT, 0);
     diriger_aiguillage(20, DEVIE     , 0);
@@ -81,11 +94,12 @@ int cmain()
 
     // Loco 0
     // Exemple de position de départ
-    locoA.fixerPosition(25, 32);
+    locoA.fixerPosition(26, 27);
 
     // Loco 1
     // Exemple de position de départ
-    locoB.fixerPosition(22, 28);
+    locoB.fixerPosition(21, 22);
+
 
     /***********
      * Message *
@@ -102,9 +116,9 @@ int cmain()
     std::shared_ptr<SharedSectionInterface> sharedSection = std::make_shared<SharedSection>();
 
     // Création du thread pour la loco 0
-    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection /*, autres paramètres ...*/);
+    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection,contactLocoA, 18,16);
     // Création du thread pour la loco 1
-    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection /*, autres paramètres ...*/);
+    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection,contactLocoB, 13,10);
 
     // Lanchement des threads
     afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoA.numero())));
