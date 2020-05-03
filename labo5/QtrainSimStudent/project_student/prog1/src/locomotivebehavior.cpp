@@ -8,7 +8,21 @@
 #include "locomotivebehavior.h"
 #include "ctrain_handler.h"
 
-#define NB_TOUR_CHANGEMENT_SENS 1
+#define NB_TOUR_CHANGEMENT_SENS 2
+
+void LocomotiveBehavior::getAccessSS(unsigned int actualContact, unsigned int points1, unsigned int points2)
+{
+    // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
+    if(actualContact == points1 || actualContact == points2){
+        if(!sharedSectionRequested){
+            sharedSectionRequested = !sharedSectionRequested;
+            sharedSection->getAccess(loco,SharedSectionInterface::Priority::LowPriority);
+        }else{
+            sharedSectionRequested = !sharedSectionRequested;
+            sharedSection->leave(loco);
+        }
+    }
+}
 
 void LocomotiveBehavior::run()
 {
@@ -22,38 +36,23 @@ void LocomotiveBehavior::run()
 //    sharedSection->getAccess(loco,SharedSectionInterface::Priority::LowPriority);
 //    sharedSection->leave(loco);
 
-
-    // la loco début par attendre le premier prochain contact
+    // la loco commence par attendre le premier prochain contact
     attendre_contact(contactList.at(0));
     while(1) {
         // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = 1; j < contactList.size(); j++){
                 attendre_contact(contactList.at(j));
-                if(contactList.at(j) == 13||  contactList.at(j) == 18){
-                    diriger_aiguillage(8,  TOUT_DROIT     , 0);
-                    diriger_aiguillage(9,  TOUT_DROIT     , 0);
-                }else if(contactList.at(j) == 10 || contactList.at(j) == 16){
-                    diriger_aiguillage(8,  DEVIE     , 0);
-                    diriger_aiguillage(9,  DEVIE     , 0);
-                }
+                getAccessSS(contactList.at(j), CONTACT_POINTS_1, CONTACT_POINTS_2);
             }
-
         loco.inverserSens();
 
         // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = contactList.size() - 2; j >= 0; j--){
                 attendre_contact(contactList.at(j));
-                if(contactList.at(j) == 10|| contactList.at(j) == 16){
-                    diriger_aiguillage(8,  TOUT_DROIT     , 0);
-                    diriger_aiguillage(9,  TOUT_DROIT     , 0);
-                }else if(contactList.at(j) == 13 || contactList.at(j) == 18){
-                    diriger_aiguillage(8,  DEVIE     , 0);
-                    diriger_aiguillage(9,  DEVIE     , 0);
-                }
+                getAccessSS(contactList.at(j), CONTACT_POINTS_1, CONTACT_POINTS_2);
             }
-
         loco.inverserSens();
     }
 }
