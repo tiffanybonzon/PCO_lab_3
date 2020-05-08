@@ -59,31 +59,31 @@ public:
     void getAccess(Locomotive &loco, Priority priority) override {
         // Exemple de message dans la console globale
         //afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
-        while(1){
-            mutexIsFree->acquire();
-            if (!isFree){
-                loco.arreter();
-                mutexIsFree->release();
-                waitingLoco->acquire();
-                continue;
-            }else{
-                // préparation des aiguillages pour le train
-                unsigned int direction;
-                if(loco.numero() == 7)
-                    direction = DEVIE;
-                else
-                    direction = TOUT_DROIT;
-
-                diriger_aiguillage(8,  direction, 0);
-                diriger_aiguillage(9,  direction, 0);
-
-                // lancement de la locomotive et bloquage de la section partagée
-                loco.demarrer();
-                isFree = false;
-                mutexIsFree->release();
-                return;
-            }
+        bool isStop = false;
+        mutexIsFree->acquire();
+        while(!isFree){
+            loco.arreter();
+            isStop = true;
+            mutexIsFree->release();
+            waitingLoco->acquire();
         }
+
+        // préparation des aiguillages pour le train
+        unsigned int direction;
+        if(loco.numero() == 7)
+            direction = DEVIE;
+        else
+            direction = TOUT_DROIT;
+
+        diriger_aiguillage(8,  direction, 0);
+        diriger_aiguillage(9,  direction, 0);
+
+        // lancement de la locomotive et bloquage de la section partagée
+        if (isStop)
+            loco.demarrer();
+        isFree = false;
+        mutexIsFree->release();
+        return;
     }
 
     /**

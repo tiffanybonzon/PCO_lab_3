@@ -54,11 +54,7 @@ protected:
     std::shared_ptr<SharedSectionInterface> sharedSection;
 
     QVector<int> contactList;
-    /*
-     * Vous êtes libres d'ajouter des méthodes ou attributs
-     *
-     * Par exemple la priorité ou le parcours
-     */
+
 private:
     void getAccessSS(unsigned int actualContact, unsigned int pointsTD, unsigned int pointsD);
     // contact auquel on change l'aiguillage sur tout droit
