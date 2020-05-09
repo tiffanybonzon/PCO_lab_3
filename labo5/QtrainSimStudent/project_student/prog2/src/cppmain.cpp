@@ -38,8 +38,13 @@ void emergency_stop()
 //Fonction principale
 int cmain()
 {
+    // définition du parcours
     QVector<int> contactLocoB {21,20,19,13,15,10,4,3,2,1,31,30,29,28,22};
     QVector<int> contactLocoA {26,24,23,16,15,18,17,27};
+
+    // définition des priorités des locos
+    locoA.priority = 1;
+    locoB.priority = 0;
 
     /************
      * Maquette *

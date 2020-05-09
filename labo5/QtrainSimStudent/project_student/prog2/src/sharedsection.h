@@ -32,7 +32,6 @@ public:
         isFree = true;
         mutexIsFree = new PcoSemaphore(1);
         waitingLoco = new PcoSemaphore(0);
-        QVector section {23,16};
     }
 
     /**
@@ -99,8 +98,6 @@ public:
         waitingLoco->release();
         mutexIsFree->release();
     }
-
-    /* A vous d'ajouter ce qu'il vous faut */
 
 private:
     bool isFree;

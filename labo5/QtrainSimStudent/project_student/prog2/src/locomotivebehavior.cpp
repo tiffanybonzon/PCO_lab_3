@@ -15,12 +15,11 @@ void LocomotiveBehavior::getAccessSS(unsigned int actualContact, unsigned int po
     // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
     if(actualContact == points1 || actualContact == points2){
         if(!sharedSectionRequested){
-            sharedSectionRequested = !sharedSectionRequested;
             sharedSection->getAccess(loco,SharedSectionInterface::Priority::LowPriority);
         }else{
-            sharedSectionRequested = !sharedSectionRequested;
             sharedSection->leave(loco);
         }
+        sharedSectionRequested = !sharedSectionRequested;
     }
 }
 
