@@ -25,14 +25,14 @@ public:
      * \param loco la locomotive dont on représente le comportement
      */
     LocomotiveBehavior(Locomotive& loco,
-                       std::shared_ptr<SharedSectionInterface> sharedSection ,
-                       QVector<int> contactList,
-                       unsigned AcceptContat1,unsigned  AcceptContact2,
+                       std::shared_ptr<SharedSectionInterface> &sharedSection ,
+                       const QVector<int> &contactList,
+                       const QVector<int> &acceptContact,
                        unsigned requestContat1,unsigned  requestContact2) :
         loco(loco),
         sharedSection(sharedSection),
         contactList(contactList),
-        ACCEPT_CONTACT_1(AcceptContat1), ACCEPT_CONTACT_2(AcceptContact2),
+        acceptContact(acceptContact),
         REQUEST_CONTACT_1(requestContat1),REQUEST_CONTACT_2(requestContact2){
         priority = loco.priority > 0? SharedSectionInterface::Priority::HighPriority : SharedSectionInterface::Priority::HighPriority;
     }
@@ -63,13 +63,12 @@ protected:
      */
     std::shared_ptr<SharedSectionInterface> sharedSection;
 
-    QVector<int> contactList;
 
 private:
-    void getAccessSS(unsigned int actualContact, unsigned int pointsTD, unsigned int pointsD);
+    QVector<int> contactList;
+    void getAccessSS(unsigned int actualContact);
     // contacts auquel on accepte ou non l'accès
-    const unsigned int ACCEPT_CONTACT_1;
-    const unsigned int ACCEPT_CONTACT_2;
+    QVector<int> acceptContact;
     // contacts auquel on demande l'accès
     const unsigned int REQUEST_CONTACT_1;
     const unsigned int REQUEST_CONTACT_2;

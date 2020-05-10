@@ -7,13 +7,14 @@
 //
 #include "locomotivebehavior.h"
 #include "ctrain_handler.h"
+#include <algorithm>
 
 #define NB_TOUR_CHANGEMENT_SENS 2
 
-void LocomotiveBehavior::getAccessSS(unsigned int actualContact, unsigned int points1, unsigned int points2)
+void LocomotiveBehavior::getAccessSS(unsigned int actualContact)
 {
     // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
-    if(actualContact == points1 || actualContact == points2){
+    if(qFind(acceptContact.begin(),acceptContact.end(), actualContact) != acceptContact.end()){
         if(!sharedSectionRequested){
             sharedSection->getAccess(loco,priority);
         }else{
@@ -30,11 +31,6 @@ void LocomotiveBehavior::run()
     loco.demarrer();
     loco.afficherMessage("Ready!");
 
-    // Vous pouvez appeler les méthodes de la section partagée comme ceci :
-//    sharedSection->request(loco,SharedSectionInterface::Priority::LowPriority);
-//    sharedSection->getAccess(loco,SharedSectionInterface::Priority::LowPriority);
-//    sharedSection->leave(loco);
-
     // la loco commence par attendre le premier prochain contact
     attendre_contact(contactList.at(0));
     while(1) {
@@ -42,7 +38,7 @@ void LocomotiveBehavior::run()
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = 1; j < contactList.size(); j++){
                 attendre_contact(contactList.at(j));
-                getAccessSS(contactList.at(j), ACCEPT_CONTACT_1, ACCEPT_CONTACT_2);
+                getAccessSS(contactList.at(j));
             }
         loco.inverserSens();
 
@@ -50,7 +46,7 @@ void LocomotiveBehavior::run()
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = contactList.size() - 2; j >= 0; j--){
                 attendre_contact(contactList.at(j));
-                getAccessSS(contactList.at(j), ACCEPT_CONTACT_1, ACCEPT_CONTACT_2);
+                getAccessSS(contactList.at(j));
             }
         loco.inverserSens();
     }
