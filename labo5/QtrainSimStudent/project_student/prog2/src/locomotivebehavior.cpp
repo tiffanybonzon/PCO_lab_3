@@ -42,7 +42,7 @@ void LocomotiveBehavior::run()
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = 1; j < contactList.size(); j++){
                 attendre_contact(contactList.at(j));
-                getAccessSS(contactList.at(j), CONTACT_POINTS_1, CONTACT_POINTS_2);
+                getAccessSS(contactList.at(j), ACCEPT_CONTACT_1, ACCEPT_CONTACT_2);
             }
         loco.inverserSens();
 
@@ -50,7 +50,7 @@ void LocomotiveBehavior::run()
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = contactList.size() - 2; j >= 0; j--){
                 attendre_contact(contactList.at(j));
-                getAccessSS(contactList.at(j), CONTACT_POINTS_1, CONTACT_POINTS_2);
+                getAccessSS(contactList.at(j), ACCEPT_CONTACT_1, ACCEPT_CONTACT_2);
             }
         loco.inverserSens();
     }

@@ -24,8 +24,16 @@ public:
      * \brief locomotiveBehavior Constructeur de la classe
      * \param loco la locomotive dont on représente le comportement
      */
-    LocomotiveBehavior(Locomotive& loco, std::shared_ptr<SharedSectionInterface> sharedSection , QVector<int> contactList, unsigned int contatPointsTD,unsigned int contactPointsD) :
-        loco(loco), sharedSection(sharedSection), contactList(contactList),CONTACT_POINTS_1(contatPointsTD), CONTACT_POINTS_2(contactPointsD){
+    LocomotiveBehavior(Locomotive& loco,
+                       std::shared_ptr<SharedSectionInterface> sharedSection ,
+                       QVector<int> contactList,
+                       unsigned AcceptContat1,unsigned  AcceptContact2,
+                       unsigned requestContat1,unsigned  requestContact2) :
+        loco(loco),
+        sharedSection(sharedSection),
+        contactList(contactList),
+        ACCEPT_CONTACT_1(AcceptContat1), ACCEPT_CONTACT_2(AcceptContact2),
+        REQUEST_CONTACT_1(requestContat1),REQUEST_CONTACT_2(requestContact2){
         priority = loco.priority > 0? SharedSectionInterface::Priority::HighPriority : SharedSectionInterface::Priority::HighPriority;
     }
 
@@ -59,10 +67,12 @@ protected:
 
 private:
     void getAccessSS(unsigned int actualContact, unsigned int pointsTD, unsigned int pointsD);
-    // contact auquel on change l'aiguillage sur tout droit
-    const unsigned int CONTACT_POINTS_1;
-    // contact auquel on change l'aiguillage sur dévié
-    const unsigned int CONTACT_POINTS_2;
+    // contacts auquel on accepte ou non l'accès
+    const unsigned int ACCEPT_CONTACT_1;
+    const unsigned int ACCEPT_CONTACT_2;
+    // contacts auquel on demande l'accès
+    const unsigned int REQUEST_CONTACT_1;
+    const unsigned int REQUEST_CONTACT_2;
     // garde une trace de la demande de bloquage de la section paratagée
     bool sharedSectionRequested = false;
     // conversion en niveau de priorité

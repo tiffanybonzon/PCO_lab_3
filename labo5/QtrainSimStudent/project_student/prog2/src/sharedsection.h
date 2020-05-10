@@ -28,7 +28,7 @@ public:
      * @brief SharedSection Constructeur de la classe qui représente la section partagée.
      * Initialisez vos éventuels attributs ici, sémaphores etc.
      */
-    SharedSection(): isFree(true),nbHigh(0), nbLow(0), nbWaiting(0), mutex(1),waitingLoco(0) {
+    SharedSection(): isFree(true),nbHigh(0), nbWaiting(0), mutex(1), mutexPriority(1), waitingLoco(0) {
     }
 
     /**
@@ -38,14 +38,12 @@ public:
      * @param priority La priorité de la locomotive qui fait l'appel
      */
     void request(Locomotive& loco, Priority priority) override {
-
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString("The engine no. %1 requested the shared section.").arg(loco.numero())));
-        mutex.acquire();
-        if(priority == Priority::HighPriority){
-
-        }
-        mutex.release();
+        mutexPriority.acquire();
+        if(priority == Priority::HighPriority)
+            nbHigh++;
+        mutexPriority.release();
     }
 
     /**
@@ -57,6 +55,7 @@ public:
      * @param loco La locomotive qui essaie accéder à la section partagée
      * @param priority La priorité de la locomotive qui fait l'appel
      */
+
     void getAccess(Locomotive &loco, Priority priority) override {
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
@@ -64,11 +63,11 @@ public:
         mutex.acquire();
         while(!isFree){
             loco.arreter();
-            afficher_message(qPrintable(QString("The engine no. %1 is stopped").arg(loco.numero())));
             isStop = true;
             nbWaiting++;
             mutex.release();
             waitingLoco.acquire();
+            mutex.acquire();
         }
 
         // préparation des aiguillages pour le train
@@ -108,9 +107,8 @@ public:
 
 private:
     bool isFree;
-    unsigned nbHigh, nbLow, nbWaiting;
-    PcoSemaphore mutex;
-    PcoSemaphore waitingLoco;
+    unsigned nbHigh, nbWaiting;
+    PcoSemaphore mutex, mutexPriority,waitingLoco;
 };
 
 
