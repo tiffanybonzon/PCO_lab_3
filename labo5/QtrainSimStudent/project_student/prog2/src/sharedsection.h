@@ -28,10 +28,7 @@ public:
      * @brief SharedSection Constructeur de la classe qui représente la section partagée.
      * Initialisez vos éventuels attributs ici, sémaphores etc.
      */
-    SharedSection() {
-        isFree = true;
-        mutexIsFree = new PcoSemaphore(1);
-        waitingLoco = new PcoSemaphore(0);
+    SharedSection(): isFree(true),nbHigh(0), nbLow(0), nbWaiting(0), mutex(1),waitingLoco(0) {
     }
 
     /**
@@ -44,6 +41,11 @@ public:
 
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString("The engine no. %1 requested the shared section.").arg(loco.numero())));
+        mutex.acquire();
+        if(priority == Priority::HighPriority){
+
+        }
+        mutex.release();
     }
 
     /**
@@ -57,14 +59,16 @@ public:
      */
     void getAccess(Locomotive &loco, Priority priority) override {
         // Exemple de message dans la console globale
-        //afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
+        afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
         bool isStop = false;
-        mutexIsFree->acquire();
+        mutex.acquire();
         while(!isFree){
             loco.arreter();
+            afficher_message(qPrintable(QString("The engine no. %1 is stopped").arg(loco.numero())));
             isStop = true;
-            mutexIsFree->release();
-            waitingLoco->acquire();
+            nbWaiting++;
+            mutex.release();
+            waitingLoco.acquire();
         }
 
         // préparation des aiguillages pour le train
@@ -81,7 +85,7 @@ public:
         if (isStop)
             loco.demarrer();
         isFree = false;
-        mutexIsFree->release();
+        mutex.release();
         return;
     }
 
@@ -91,18 +95,22 @@ public:
      * @param loco La locomotive qui quitte la section partagée
      */
     void leave(Locomotive& loco) override {
-        //afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
+        afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
         // libération de la zone partagée et envoi d'un "signal" à la locolotive qui attend
-        mutexIsFree->acquire();
+        mutex.acquire();
         isFree = true;
-        waitingLoco->release();
-        mutexIsFree->release();
+        if(nbWaiting){
+            waitingLoco.release();
+            nbWaiting--;
+        }
+        mutex.release();
     }
 
 private:
     bool isFree;
-    PcoSemaphore *mutexIsFree;
-    PcoSemaphore *waitingLoco;
+    unsigned nbHigh, nbLow, nbWaiting;
+    PcoSemaphore mutex;
+    PcoSemaphore waitingLoco;
 };
 
 

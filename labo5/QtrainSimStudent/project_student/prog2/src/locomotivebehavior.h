@@ -11,6 +11,7 @@
 #include "locomotive.h"
 #include "launchable.h"
 #include "sharedsectioninterface.h"
+#include "ctrain_handler.h"
 #include <QVector>
 
 /**
@@ -25,6 +26,7 @@ public:
      */
     LocomotiveBehavior(Locomotive& loco, std::shared_ptr<SharedSectionInterface> sharedSection , QVector<int> contactList, unsigned int contatPointsTD,unsigned int contactPointsD) :
         loco(loco), sharedSection(sharedSection), contactList(contactList),CONTACT_POINTS_1(contatPointsTD), CONTACT_POINTS_2(contactPointsD){
+        priority = loco.priority > 0? SharedSectionInterface::Priority::HighPriority : SharedSectionInterface::Priority::HighPriority;
     }
 
 protected:
@@ -63,6 +65,8 @@ private:
     const unsigned int CONTACT_POINTS_2;
     // garde une trace de la demande de bloquage de la section paratagée
     bool sharedSectionRequested = false;
+    // conversion en niveau de priorité
+    SharedSectionInterface::Priority priority;
 };
 
 #endif // LOCOMOTIVEBEHAVIOR_H
