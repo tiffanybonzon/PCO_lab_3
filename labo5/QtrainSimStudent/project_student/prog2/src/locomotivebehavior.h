@@ -34,7 +34,7 @@ public:
         contactList(contactList),
         acceptContact(acceptContact),
         requestContact(requestContact){
-        priority = loco.priority > 0? SharedSectionInterface::Priority::HighPriority : SharedSectionInterface::Priority::HighPriority;
+        priority = loco.priority > 0? SharedSectionInterface::Priority::HighPriority : SharedSectionInterface::Priority::LowPriority;
     }
 
 protected:
@@ -77,6 +77,7 @@ private:
     bool sharedSectionRequested = false;
     // conversion en niveau de priorité
     SharedSectionInterface::Priority priority;
+    void processContat(int contact);
 };
 
 #endif // LOCOMOTIVEBEHAVIOR_H

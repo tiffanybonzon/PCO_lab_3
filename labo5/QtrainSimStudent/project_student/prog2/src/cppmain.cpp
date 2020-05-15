@@ -17,7 +17,7 @@
 // Laissez les numéros des locos à 0 et 1 pour ce laboratoire
 
 // Locomotive A
-static Locomotive locoA(7 /* Numéro (pour commande trains sur maquette réelle) */, 10 /* Vitesse */);
+static Locomotive locoA(7 /* Numéro (pour commande trains sur maquette réelle) */, 12 /* Vitesse */);
 // Locomotive B
 static Locomotive locoB(42 /* Numéro (pour commande trains sur maquette réelle) */, 12 /* Vitesse */);
 
@@ -40,15 +40,15 @@ int cmain()
 {
     // définition du parcours
     QVector<int> contactLocoB {21,20,19,13,15,10,4,3,2,1,31,30,29,28,22};
-    QVector<int> contactLocoA {26,24,23,16,15,18,17,27};
-    QVector<int> requestContactLocoA {17,24};
-    QVector<int> requestContactLocoB {4,19};
-    QVector<int> acceptContactLocoA {18,23};
-    QVector<int> acceptContactLocoB {13,10};
+    QVector<int> contactLocoA {34,33,36,35,17,18,15,16,23,24,26,27,9,8,6,5};
+    QVector<int> requestContactLocoA {35,24};
+    QVector<int> requestContactLocoB {3,20};
+    QVector<int> acceptContactLocoA {17,23};
+    QVector<int> acceptContactLocoB {13,4};
 
     // définition des priorités des locos
     locoA.priority = 1;
-    locoB.priority = 0;
+    locoB.priority = 1;
 
     /************
      * Maquette *
@@ -70,31 +70,28 @@ int cmain()
     diriger_aiguillage(2,  DEVIE     , 0);
     diriger_aiguillage(3,  DEVIE     , 0);
     diriger_aiguillage(4,  TOUT_DROIT, 0);
-    diriger_aiguillage(5,  TOUT_DROIT, 0);
-    diriger_aiguillage(6,  TOUT_DROIT, 0);
-    diriger_aiguillage(7,  DEVIE, 0);
-    //loco 42
-    diriger_aiguillage(8,  TOUT_DROIT     , 0);
-    diriger_aiguillage(9,  TOUT_DROIT     , 0);
-    // loco 7
+    diriger_aiguillage(5,  DEVIE     , 0);
+    diriger_aiguillage(6,  DEVIE     , 0);
+    diriger_aiguillage(7,  DEVIE     , 0);
+    diriger_aiguillage(8,  TOUT_DROIT, 0);
+    diriger_aiguillage(9,  TOUT_DROIT, 0);
     diriger_aiguillage(8,  DEVIE     , 0);
     diriger_aiguillage(9,  DEVIE     , 0);
-
-    diriger_aiguillage(10, DEVIE, 0);
-    diriger_aiguillage(11, DEVIE, 0);
-    diriger_aiguillage(12, TOUT_DROIT, 0);
+    diriger_aiguillage(10, DEVIE     , 0);
+    diriger_aiguillage(11, DEVIE     , 0);
+    diriger_aiguillage(12, DEVIE     , 0);
     diriger_aiguillage(13, TOUT_DROIT, 0);
     diriger_aiguillage(14, DEVIE     , 0);
     diriger_aiguillage(15, DEVIE     , 0);
     diriger_aiguillage(16, TOUT_DROIT, 0);
-    diriger_aiguillage(17, DEVIE, 0);
-    diriger_aiguillage(18, TOUT_DROIT, 0);
+    diriger_aiguillage(17, DEVIE     , 0);
+    diriger_aiguillage(18, DEVIE     , 0);
     diriger_aiguillage(19, TOUT_DROIT, 0);
     diriger_aiguillage(20, DEVIE     , 0);
     diriger_aiguillage(21, DEVIE     , 0);
     diriger_aiguillage(22, TOUT_DROIT, 0);
-    diriger_aiguillage(23, TOUT_DROIT, 0);
-    diriger_aiguillage(24, TOUT_DROIT, 0);
+    diriger_aiguillage(23, DEVIE     , 0);
+    diriger_aiguillage(24, DEVIE     , 0);
     // diriger_aiguillage(/*NUMERO*/, /*TOUT_DROIT | DEVIE*/, /*0*/);
 
     /********************************
@@ -103,7 +100,7 @@ int cmain()
 
     // Loco 0
     // Exemple de position de départ
-    locoA.fixerPosition(26, 27);
+    locoA.fixerPosition(34, 5);
 
     // Loco 1
     // Exemple de position de départ

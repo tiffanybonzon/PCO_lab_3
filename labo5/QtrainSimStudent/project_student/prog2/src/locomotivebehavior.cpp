@@ -13,13 +13,12 @@
 
 void LocomotiveBehavior::getAccessSS(unsigned int actualContact)
 {
-    // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
+    // si les contacts sont ceux qui permettent l'accès à la section partagée
     if(qFind(acceptContact.begin(),acceptContact.end(), actualContact) != acceptContact.end()){
         if(!sharedSectionAccessed){
             sharedSection->getAccess(loco,priority);
         }else{
             sharedSection->leave(loco);
-            sharedSectionRequested = !sharedSectionRequested;
         }
         sharedSectionAccessed = !sharedSectionAccessed;
     }
@@ -27,13 +26,22 @@ void LocomotiveBehavior::getAccessSS(unsigned int actualContact)
 
 void LocomotiveBehavior::getRequestSS(unsigned int actualContact)
 {
-    // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
+    // si les contacts sont ceux pour la requête de section partagée
     if(qFind(requestContact.begin(),requestContact.end(), actualContact) != requestContact.end()){
         if(!sharedSectionRequested){
             sharedSection->request(loco,priority);
             sharedSectionRequested = !sharedSectionRequested;
+        }else{
+            sharedSectionRequested = !sharedSectionRequested;
         }
     }
+}
+
+void LocomotiveBehavior::processContat(int contact)
+{
+    attendre_contact(contactList.at(contact));
+    getRequestSS(contactList.at(contact));
+    getAccessSS(contactList.at(contact));
 }
 
 void LocomotiveBehavior::run()
@@ -49,16 +57,14 @@ void LocomotiveBehavior::run()
         // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = 1; j < contactList.size(); j++){
-                attendre_contact(contactList.at(j));
-                getAccessSS(contactList.at(j));
+                processContat(j);
             }
         loco.inverserSens();
 
         // effectue NB_TOUR_CHANGEMENT_SENS fois un tour de circuit
         for(int i = 0; i < NB_TOUR_CHANGEMENT_SENS; i ++)
             for(int j = contactList.size() - 2; j >= 0; j--){
-                attendre_contact(contactList.at(j));
-                getAccessSS(contactList.at(j));
+                processContat(j);
             }
         loco.inverserSens();
     }

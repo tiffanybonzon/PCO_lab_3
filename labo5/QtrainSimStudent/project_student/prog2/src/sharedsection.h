@@ -88,6 +88,8 @@ public:
         // lancement de la locomotive et bloquage de la section partagée
         if (isStop)
             loco.demarrer();
+        if(priority == Priority::HighPriority)
+            nbHigh--;
         mutex.release();
         return;
     }
