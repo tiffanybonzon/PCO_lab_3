@@ -28,12 +28,12 @@ public:
                        std::shared_ptr<SharedSectionInterface> &sharedSection ,
                        const QVector<int> &contactList,
                        const QVector<int> &acceptContact,
-                       unsigned requestContat1,unsigned  requestContact2) :
+                       const QVector<int> &requestContact) :
         loco(loco),
         sharedSection(sharedSection),
         contactList(contactList),
         acceptContact(acceptContact),
-        REQUEST_CONTACT_1(requestContat1),REQUEST_CONTACT_2(requestContact2){
+        requestContact(requestContact){
         priority = loco.priority > 0? SharedSectionInterface::Priority::HighPriority : SharedSectionInterface::Priority::HighPriority;
     }
 
@@ -67,12 +67,13 @@ protected:
 private:
     QVector<int> contactList;
     void getAccessSS(unsigned int actualContact);
+    void getRequestSS(unsigned int actualContact);
     // contacts auquel on accepte ou non l'accès
     QVector<int> acceptContact;
     // contacts auquel on demande l'accès
-    const unsigned int REQUEST_CONTACT_1;
-    const unsigned int REQUEST_CONTACT_2;
+    QVector<int> requestContact;
     // garde une trace de la demande de bloquage de la section paratagée
+    bool sharedSectionAccessed = false;
     bool sharedSectionRequested = false;
     // conversion en niveau de priorité
     SharedSectionInterface::Priority priority;

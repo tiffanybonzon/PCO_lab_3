@@ -46,6 +46,18 @@ public:
         mutexPriority.release();
     }
 
+    void prepareRail(Locomotive &loco)
+    {
+        unsigned int direction;
+        if(loco.numero() == 7)
+            direction = DEVIE;
+        else
+            direction = TOUT_DROIT;
+
+        diriger_aiguillage(8,  direction, 0);
+        diriger_aiguillage(9,  direction, 0);
+    }
+
     /**
      * @brief getAccess Méthode à appeler pour accéder à la section partagée, doit arrêter la
      * locomotive et mettre son thread en attente si la section est occupée ou va être occupée
@@ -55,13 +67,12 @@ public:
      * @param loco La locomotive qui essaie accéder à la section partagée
      * @param priority La priorité de la locomotive qui fait l'appel
      */
-
     void getAccess(Locomotive &loco, Priority priority) override {
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
         bool isStop = false;
         mutex.acquire();
-        while(!isFree){
+        while(!isFree || (priority == SharedSectionInterface::Priority::LowPriority && nbHigh > 0)){
             loco.arreter();
             isStop = true;
             nbWaiting++;
@@ -69,21 +80,14 @@ public:
             waitingLoco.acquire();
             mutex.acquire();
         }
+        isFree = false;
 
         // préparation des aiguillages pour le train
-        unsigned int direction;
-        if(loco.numero() == 7)
-            direction = DEVIE;
-        else
-            direction = TOUT_DROIT;
-
-        diriger_aiguillage(8,  direction, 0);
-        diriger_aiguillage(9,  direction, 0);
+        prepareRail(loco);
 
         // lancement de la locomotive et bloquage de la section partagée
         if (isStop)
             loco.demarrer();
-        isFree = false;
         mutex.release();
         return;
     }

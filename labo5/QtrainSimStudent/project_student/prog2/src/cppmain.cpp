@@ -41,8 +41,8 @@ int cmain()
     // définition du parcours
     QVector<int> contactLocoB {21,20,19,13,15,10,4,3,2,1,31,30,29,28,22};
     QVector<int> contactLocoA {26,24,23,16,15,18,17,27};
-    QVector<int> requestContactLocoA {};
-    QVector<int> requestContactLocoB {};
+    QVector<int> requestContactLocoA {17,24};
+    QVector<int> requestContactLocoB {4,19};
     QVector<int> acceptContactLocoA {18,23};
     QVector<int> acceptContactLocoB {13,10};
 
@@ -125,9 +125,9 @@ int cmain()
     std::shared_ptr<SharedSectionInterface> sharedSection = std::make_shared<SharedSection>();
 
     // Création du thread pour la loco 0
-    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection,contactLocoA, acceptContactLocoA,17,24);
+    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection,contactLocoA, acceptContactLocoA,requestContactLocoA);
     // Création du thread pour la loco 1
-    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection,contactLocoB, acceptContactLocoB,4,19);
+    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection,contactLocoB, acceptContactLocoB,requestContactLocoB);
 
     // Lanchement des threads
     afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoA.numero())));

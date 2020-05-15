@@ -15,12 +15,24 @@ void LocomotiveBehavior::getAccessSS(unsigned int actualContact)
 {
     // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
     if(qFind(acceptContact.begin(),acceptContact.end(), actualContact) != acceptContact.end()){
-        if(!sharedSectionRequested){
+        if(!sharedSectionAccessed){
             sharedSection->getAccess(loco,priority);
         }else{
             sharedSection->leave(loco);
+            sharedSectionRequested = !sharedSectionRequested;
         }
-        sharedSectionRequested = !sharedSectionRequested;
+        sharedSectionAccessed = !sharedSectionAccessed;
+    }
+}
+
+void LocomotiveBehavior::getRequestSS(unsigned int actualContact)
+{
+    // si les contacts sont ceux d'entrée ou de sortie on réserve ou libère la section paratagée
+    if(qFind(requestContact.begin(),requestContact.end(), actualContact) != requestContact.end()){
+        if(!sharedSectionRequested){
+            sharedSection->request(loco,priority);
+            sharedSectionRequested = !sharedSectionRequested;
+        }
     }
 }
 
