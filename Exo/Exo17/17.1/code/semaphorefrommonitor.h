@@ -6,29 +6,39 @@
 
 class SemaphoreFromMesaMonitor
 {
-
+private:
+    PcoMutex mutex;
+    PcoConditionVariable cond;
+    unsigned int value;
 public:
-    SemaphoreFromMesaMonitor(unsigned int initValue)
+    SemaphoreFromMesaMonitor(unsigned int initValue): value(initValue)
     {
-
     }
 
     ~SemaphoreFromMesaMonitor()
     {
-
     }
 
     void wait()
     {
+        mutex.lock();
+        if (value == 0)
+            cond.wait(&mutex);
+        value --;
+        mutex.unlock();
     }
 
     void post()
     {
+        mutex.lock();
+        value++;
+        mutex.unlock();
+        cond.notifyOne();
     }
 
     bool trywait()
     {
-        return false;
+        return value > 0;
     }  //! Returns true if the semaphore can be acquired, false if it is already blocked
 };
 
@@ -36,30 +46,39 @@ public:
 
 class SemaphoreFromHoareMonitor : public PcoHoareMonitor
 {
+private:
+    PcoMutex mutex;
+    PcoConditionVariable cond;
+    unsigned int value;
 public:
-    SemaphoreFromHoareMonitor(unsigned int initValue)
+    SemaphoreFromHoareMonitor(unsigned int initValue):value(initValue)
     {
-
     }
 
     ~SemaphoreFromHoareMonitor()
     {
-
     }
-
-    // Attention ici, PcoHoareMonitor a une méthode wait(condition).
-    // Pour l'appeler, utilisez PcoHoareMonitor::wait(condition);
 
     void wait()
     {
+        mutex.lock();
+        while(value == 0)
+            cond.wait(&mutex);
+        value --;
+        mutex.unlock();
     }
 
     void post()
     {
+        mutex.lock();
+        value++;
+        mutex.unlock();
+        cond.notifyOne();
     }
 
     bool trywait()
     {
-        return false;
+        return value > 0;
     }  //! Returns true if the semaphore can be acquired, false if it is already blocked
 };
+
