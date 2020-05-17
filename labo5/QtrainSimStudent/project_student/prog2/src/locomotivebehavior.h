@@ -75,12 +75,7 @@ protected:
      */
 
     /**
-     * @brief accessSharedSection Fonction permettant à une loco d'entrer et de sortir de la SS
-     * @param isInitDirection Un bool indiquant la direction de la loco
-     * @param entryInitDirection Le point de contact avant l'entrée de la loco si elle va dans sa direction initiale
-     * @param entryChangedDirection Le point de contact avant l'entrée de la loco si elle ne va pas dans sa direction initiale
-     * @param exitInitDirection Le point de sortie si la loco va dans sa direction initiale
-     * @param exitChangedDirection Le point de sortie si la loco ne va pas dans sa direction initiale
+     * @brief accessSharedSection Fonction permettant à une loco de demander l'accès, d'entrer et de sortir de la SS
      */
     void accessSharedSection();
 };
